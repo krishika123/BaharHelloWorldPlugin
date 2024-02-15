@@ -1,5 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+import { spawn } from "child_process";
 import * as vscode from "vscode";
 
 // This method is called when your extension is activated
@@ -19,6 +20,28 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   context.subscriptions.push(disposable);
+
+  let pythonDisposable = vscode.commands.registerCommand("bahar.runPythonScript", () => {
+    // Path to your Python script
+    const pythonScriptPath = '/path/to/your/python/script.py';
+
+    // Spawn a child process to execute the Python script
+    const pythonProcess = spawn('python', [pythonScriptPath]);
+
+    // Listen for output from the Python script
+    pythonProcess.stdout.on('data', (data) => {
+      console.log(`Python script output: ${data}`);
+    });
+
+    // Listen for errors from the Python script
+    pythonProcess.stderr.on('data', (data) => {
+      console.error(`Python script error: ${data}`);
+    });
+  });
+
+  context.subscriptions.push(pythonDisposable);
+
+
 }
 
 // This method is called when your extension is deactivated
